@@ -8,7 +8,7 @@ class FGridView(object):
     # @param list actions - list of actions including links to the handler and to the image, title, name of unique field
     # @param string sorting - link to the sorting handler
     @staticmethod
-    def render_grid(data = [], labels = {}, actions = [], sorting = ''):
+    def render_grid(data = [], labels = {}, actions = [], sorting = '', css_expression_func = None):
         if not data:
             return
         grid = "<div class='grid-view'>"
@@ -33,8 +33,14 @@ class FGridView(object):
             grid += "<th class='button-column'>&nbsp;</th>"
         grid += "</thead>"
         grid += "<tbody>"
+        row_number = 0
         for row in data:
-            grid += "<tr class='odd'>"
+            row_number += 1
+            if css_expression_func:
+                style = css_expression_func(row_number, row)
+            else:
+                style = "odd"
+            grid += "<tr class='{0}'>".format(style)
             for key in columns_order:
                 grid += "<td>"
                 grid += str(row[key])
