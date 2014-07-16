@@ -5,7 +5,7 @@ FGridView generates YII-style GridView for Python web frameworks like Flask. CSS
 Usage example:
 
     data = [{'uid': 1, 'name': 'Porto', 'comments': 'woman'},
-            {'uid': 2, 'name': 'Ghast', 'comments': 'demon'}]    
+            {'uid': 2, 'name': 'Ghast', 'comments': 'daemon'}]    
     labels['name'] = 'Name'
     labels['comments'] = 'Misc'
     actions = [{'link': '/entities/update/', 'title': 'Update', 'image': '/static/img/update.png', 'id':  'uid'}, 
