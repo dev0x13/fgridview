@@ -4,28 +4,29 @@ class FGridView(object):
 
     # Grid render function
     # @param list data                List of data dictionaries/lists
-    # @param dict labels              Dictionary of labels, where keys equals keys of "data" element
+    # @param dict columns             Dictionary of columns attributes (only name or name and type)
     # @param list actions             List of actions including links to the handler and to the image, title, name of unique field
     # @param string sorting           Link to the sorting handler
     # @param dict sorting_params      Sorting parameters dictionary (for showing in table head)
     # @param func css_expression_func CSS styling expression
     @staticmethod
-    def render_grid(data = [], labels = {}, actions = [], sorting = "",
-                    css_expression_func = None, sorting_params = {} ):
+    def render_grid(data = [], columns = {}, actions = [], sorting = "",
+                    css_expression_func = None, sorting_params = {}):
         if not data:
             return ""
         sorting_style = ""
         style = ""
-        if not labels:
+        if not columns:
             for row in data[0]:
-                labels[row] = row
-        columns_order = list(labels.keys())
+                columns[row] = row
+        columns_order = list(columns.keys())
         order = 0
         row_number = 0
         grid = "<div class='grid-view'>"
         grid += "<table class='items'>"
         grid += "<thead>"
-        for key, label in labels.iteritems():
+        for key, column in columns.iteritems():
+            column = column["label"] if type(column) is dict else column
             grid += "<th>"
             if sorting:
                 if sorting_params:
@@ -38,10 +39,10 @@ class FGridView(object):
                 grid += "<a class='{0}' href='".format(sorting_style)
                 grid += sorting + key + "&order=" + str(order)
                 grid += "'>"
-                grid += label
+                grid += column
                 grid += "</a>"
             else:
-                grid += label
+                grid += column
             grid += "</th>"
         if actions:
             grid += "<th class='button-column'>&nbsp;</th>"
@@ -58,7 +59,17 @@ class FGridView(object):
                 grid += "<td>"
                 if row[key] == None:
                     row[key] = ""
-                grid += str(row[key]).replace(">", "&gt").replace("<", "&lt")
+                try:
+                    row[key] = unicode(row[key], "utf-8")
+                except:
+                    pass
+                try:
+                    row[key] = str(row[key])
+                except:
+                    pass
+                if type(columns[key]) is dict and columns[key]["type"] != "html":
+                    row[key] = row[key].replace(">", "&gt").replace("<", "&lt")
+                grid += row[key]
                 grid += "</td>"
             if actions:
                 grid += "<td class='button-column'>"

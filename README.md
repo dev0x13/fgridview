@@ -5,11 +5,13 @@ FGridView generates YII-style GridView for Python web frameworks like Flask. CSS
 Usage example:
 
     data = [{"uid": 1, "name": "Porto", "comments": "The woman"},
-            {"uid": 2, "name": "Ghast", "comments": "The daemon"}]
+            {"uid": 2, "name": "Ghast", "comments": "The daemon"},
+            {"uid": 3, "name": "<a href='mypage.net'>My page</a>", 
+                       "comments": "My personal homepage"}]
 
-    labels = OrderedDict() # Important!
-    labels["name"] = "Name"
-    labels["comments"] = "Misc"
+    columns = OrderedDict() # Important!
+    columns["name"] = {"label": "Name", "type": "html"}
+    columns["comments"] = "Misc"
 
     actions = [{"link": "/entities/update/", "title": "Update",
                 "image": "/static/img/update.png", "id":  "uid"},
@@ -32,4 +34,4 @@ Usage example:
             sorting_params = {"field": request.args.get("field"), "order": request.args.get("order")}
             # Your code with selecting data from source in due order
 
-    grid = FGridView.render_grid(data, labels, actions, sorting, css_expression_func, sorting_params)
+    grid = FGridView.render_grid(data, columns, actions, sorting, css_expression_func, sorting_params)
