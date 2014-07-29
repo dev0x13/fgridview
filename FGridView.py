@@ -58,12 +58,7 @@ class FGridView(object):
                 grid += "<td>"
                 if row[key] == None:
                     row[key] = ""
-                try:
-                    row[key] = unicode(row[key], "utf-8")
-                    row[key] = str(row[key])
-                except:
-                    pass
-                grid += row[key].replace(">", "&gt").replace("<", "&lt")
+                grid += str(row[key]).replace(">", "&gt").replace("<", "&lt")
                 grid += "</td>"
             if actions:
                 grid += "<td class='button-column'>"
