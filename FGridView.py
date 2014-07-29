@@ -1,28 +1,42 @@
 # -*- coding: utf-8 -*-
 
 class FGridView(object):
-  
+
     # Grid render function
-    # @param list data - list of dictionaries/lists
-    # @param dict labels - dictionary of labels, where keys equals keys of "data" element
-    # @param list actions - list of actions including links to the handler and to the image, title, name of unique field
-    # @param string sorting - link to the sorting handler
+    # @param list data                List of data dictionaries/lists
+    # @param dict labels              Dictionary of labels, where keys equals keys of "data" element
+    # @param list actions             List of actions including links to the handler and to the image, title, name of unique field
+    # @param string sorting           Link to the sorting handler
+    # @param dict sorting_params      Sorting parameters dictionary (for showing in table head)
+    # @param func css_expression_func CSS styling expression
     @staticmethod
-    def render_grid(data = [], labels = {}, actions = [], sorting = '', css_expression_func = None):
+    def render_grid(data = [], labels = {}, actions = [], sorting = "",
+                    css_expression_func = None, sorting_params = {} ):
         if not data:
-            return
-        grid = "<div class='grid-view'>"
-        grid += "<table class='items'>"
+            return ""
+        sorting_style = ""
+        style = ""
         if not labels:
             for row in data[0]:
                 labels[row] = row
         columns_order = list(labels.keys())
+        order = 0
+        row_number = 0
+        grid = "<div class='grid-view'>"
+        grid += "<table class='items'>"
         grid += "<thead>"
         for key, label in labels.iteritems():
             grid += "<th>"
             if sorting:
-                grid += "<a href='"
-                grid += sorting + key
+                if sorting_params:
+                    if sorting_params["field"] == key:
+                        if sorting_params["order"] == "1":
+                            sorting_style = "asc"
+                        else:
+                            sorting_style = "desc"
+                        order = 1 - int(sorting_params["order"])
+                grid += "<a class='{0}' href='".format(sorting_style)
+                grid += sorting + key + "&order=" + str(order)
                 grid += "'>"
                 grid += label
                 grid += "</a>"
@@ -33,7 +47,6 @@ class FGridView(object):
             grid += "<th class='button-column'>&nbsp;</th>"
         grid += "</thead>"
         grid += "<tbody>"
-        row_number = 0
         for row in data:
             row_number += 1
             if css_expression_func:
@@ -43,7 +56,14 @@ class FGridView(object):
             grid += "<tr class='{0}'>".format(style)
             for key in columns_order:
                 grid += "<td>"
-                grid += str(row[key])
+                if row[key] == None:
+                    row[key] = ""
+                try:
+                    row[key] = unicode(row[key], "utf-8")
+                    row[key] = str(row[key])
+                except:
+                    pass
+                grid += row[key].replace(">", "&gt").replace("<", "&lt")
                 grid += "</td>"
             if actions:
                 grid += "<td class='button-column'>"
