@@ -67,7 +67,8 @@ class FGridView(object):
                     row[key] = str(row[key])
                 except:
                     pass
-                if type(columns[key]) is dict and columns[key]["type"] != "html":
+                if (type(columns[key]) is dict and columns[key]["type"] != "html" or
+                    type(columns[key]) != dict):
                     row[key] = row[key].replace(">", "&gt").replace("<", "&lt")
                 grid += row[key]
                 grid += "</td>"
